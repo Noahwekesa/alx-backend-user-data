@@ -42,21 +42,20 @@ def before_request():
 
 
 @app.errorhandler(401)
-def unauthorized(error) -> str:
+def unauthorized(error) -> tuple:
     """Unauthorized handler"""
     return jsonify({"error": "Unauthorized"}), 401
 
 
 @app.errorhandler(403)
-def forbidden(error) -> str:
+def forbidden(error) -> tuple:
     """Forbidden handler"""
     return jsonify({"error": "Forbidden"}), 403
 
 
 @app.errorhandler(404)
-def not_found(error) -> str:
+def not_found(error) -> tuple:
     """Not found handler"""
-
     return jsonify({"error": "Not found"}), 404
 
 
