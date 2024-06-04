@@ -20,10 +20,6 @@ auth = None
 auth_type = os.getenv("AUTH_TYPE")
 if auth_type == "basic":
     auth = BasicAuth()
-elif auth_type == "session":
-    auth = SessionAuth()
-elif auth_type == "token":
-    auth = TokenAuth()
 
 if auth:
     auth = Auth()
