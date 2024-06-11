@@ -27,7 +27,9 @@ class DB:
 
     @property
     def _session(self) -> Session:
-        """Memoized session object"""
+        """
+        Memoized session object
+        """
         if self.__session is None:
             DBSession = sessionmaker(bind=self._engine)
             self.__session = DBSession()
@@ -48,3 +50,28 @@ class DB:
         self._session.add(new_user)
         self._session.commit()
         return new_user
+
+    def find_user_by(self, **kwargs) -> User:
+        """
+        Get user by key-value pair
+        """
+        return self._session.query(User).filter_by(**kwargs).first()
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """Update a user in the database.
+
+        Args:
+        - user_id (int): The ID of the user to update.
+        - **kwargs: Keyword arguments for the attributes to update.
+
+        Returns:
+        - None
+        """
+        user = self.find_user_by(id=user_id)
+        if user is None:
+            raise ValueError("User not found")
+
+        for key, value in kwargs.items():
+            if key not in ["email", "hashed_password", "session_id", "reset_token"]:
+                raise ValueError(f"Invalid attribute: {key}")
+            setattr(user, key, value)
