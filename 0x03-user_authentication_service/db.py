@@ -6,6 +6,7 @@ DB module.
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 from user import Base, User
 
@@ -55,7 +56,12 @@ class DB:
         """
         Get user by key-value pair
         """
-        return self._session.query(User).filter_by(**kwargs).first()
+        try:
+            return self._session.query(User).filter_by(**kwargs).one()
+        except NoResultFound:
+            raise NoResultFound("No user found")
+        except MultipleResultsFound:
+            raise InvalidRequestError("Multiple users found")
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """Update a user in the database.
